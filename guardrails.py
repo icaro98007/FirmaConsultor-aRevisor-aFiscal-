@@ -24,11 +24,11 @@ OUT_OF_SCOPE_RESPONSE = (
 )
 
 JAILBREAK_BLOCKED_RESPONSE = (
-    "Alerta de Seguridad (Guardarraíl Activo): Su solicitud ha sido bloqueada porque contiene "
-    "patrones de intento de Jailbreak, juego de rol/simulación, ocultamiento de inconsistencias o "
-    "manipulación de registros/logs. Como agente de Revisoría Fiscal, opero bajo principios estrictos "
-    "de ética profesional (IESBA / Ley 43 de 1990), trazabilidad inmutable y solo respondo consultas "
-    "normativas legítimas respaldadas por nuestra base de conocimiento oficial."
+    "Alerta de Seguridad y Legalidad (Guardarraíl Activo): Su solicitud ha sido bloqueada porque "
+    "involucra un posible delito, conducta ilícita, evasión, fraude, manipulación de evidencia/logs "
+    "o intento de Jailbreak. Como agente de Revisoría Fiscal, opero bajo estricto cumplimiento de la ley "
+    "penal y tributaria colombiana, el Código de Ética (IESBA / Ley 43 de 1990) y trazabilidad inmutable, "
+    "por lo que rechazo cualquier solicitud que busque facilitar, simular o encubrir actos ilícitos."
 )
 
 
@@ -134,6 +134,51 @@ class FiscalGuardrails:
                 r"(?:alterar\s+la\s+tabla|borrar\s+un\s+hallazgo|borrar\s+el\s+historial|borrar\s+los\s+logs|"
                 r"eliminar\s+evidencia|modificar\s+el\s+ledger|romper\s+la\s+cadena|como\s+lo\s+harias.*ocultar|"
                 r"dime\s+como\s+(?:alterar|borrar|ocultar|evadir|hackear|vulnerar|falsificar))",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Delito Financiero, Contable o Tributario (Doble Contabilidad, Facturas Falsas, Evasión, Fraude)",
+            re.compile(
+                r"(?:doble\s+contabilidad|llevar\s+dos\s+contabilidades|facturas?\s+falsas?|facturacion\s+falsa|"
+                r"proveedor(?:es)?\s+ficticios?|empresa(?:s)?\s+fachada|empresa(?:s)?\s+de\s+papel|"
+                r"costos?\s+inexistentes?|pasivos?\s+ficticios?|ingresos?\s+ficticios?|inflar\s+(?:ingresos|activos|utilidades)|"
+                r"maquillar\s+(?:estados\s+financieros|balances|cifras|contabilidad)|"
+                r"falsificar\s+(?:estados\s+financieros|certificaciones|firmas|documentos|soportes|facturas)|"
+                r"certificar\s+hechos\s+falsos|falsedad\s+en\s+documento|defraudacion\s+tributaria|"
+                r"como\s+(?:evadir|eludir|no\s+pagar)\s+impuestos|evadir\s+a\s+la\s+dian|"
+                r"sin\s+que\s+la\s+dian\s+(?:se\s+de\s+cuenta|lo\s+detecte|lo\s+note)|"
+                r"sin\s+que\s+(?:el\s+auditor|la\s+revisoria|supersociedades|la\s+uiaf)\s+(?:se\s+de\s+cuenta|lo\s+detecte))",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Delito de Lavado de Activos, Testaferrato, Fraccionamiento (Pitufeo) o Violación de Reserva ROS",
+            re.compile(
+                r"(?:como\s+lavar\s+(?:dinero|activos)|blanquear\s+(?:capitales|dinero|activos)|"
+                r"pitufeo|smurfing|fraccionar\s+(?:operaciones|transacciones|depositos)\s+para\s+no|"
+                r"usar\s+testaferros?|ocultar\s+(?:el\s+)?beneficiario\s+final|burlar\s+(?:el\s+)?(?:sarlaft|sagrilaft|uiaf)|"
+                r"avisar(?:le)?\s+al\s+cliente.*ros|alertar\s+al\s+reportado|cometer\s+lavado)",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Delito de Corrupción, Soborno, Cohecho o Peculado",
+            re.compile(
+                r"(?:sobornar|pagar\s+(?:un\s+)?soborno|pagar\s+coima|dar\s+coima|dadiva\s+ilegal|"
+                r"comprar\s+a\s+un\s+(?:funcionario|inspector|auditor|revisor|juez|fiscal)|"
+                r"cohecho|peculado|concusion|colusion\s+en\s+licitacion|comision\s+ilegal\s+bajo\s+cuerda)",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Delito Informático o General (Hackeo, Robo, Extorsión, Falsificación, Narcotráfico, Violencia)",
+            re.compile(
+                r"(?:hackear|vulnerar\s+un\s+sistema|acceso\s+abusivo|robar\s+(?:datos|contrasenas|dinero|identidad)|"
+                r"clonar\s+tarjetas|phishing|ransomware|malware|extorsionar|extorsion|secuestrar|secuestro|"
+                r"chantajear|amenazar\s+de\s+muerte|homicidio|asesinar|matar\s+a|narcotrafico|trafico\s+de\s+(?:drogas|armas|influencias)|"
+                r"contrabando|estafar|como\s+cometer\s+un\s+(?:delito|fraude|robo|crimen|ilicito)|"
+                r"sin\s+dejar\s+evidencia\s+del\s+delito|sin\s+ir\s+a\s+la\s+carcel)",
                 re.IGNORECASE,
             ),
         ),
