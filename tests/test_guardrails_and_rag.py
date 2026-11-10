@@ -45,6 +45,16 @@ class TestFiscalRAGAndGuardrails(unittest.TestCase):
         self.assertTrue(len(res["sources"]) > 0)
         self.assertIn("02_Guia_practica_NIA.docx", [s["doc_name"] for s in res["sources"]])
 
+    def test_valid_arqueo_caja_menor_manual_interno_query(self):
+        res = process_fiscal_query(
+            "¿Cuál es el procedimiento obligatorio para el arqueo de caja menor según el manual interno?"
+        )
+        self.assertEqual(res["status_code"], "ALLOWED")
+        self.assertTrue(len(res["sources"]) > 0)
+        self.assertEqual(res["sources"][0]["doc_name"], "01_Procedimientos_auditoria.docx")
+        self.assertIn("arqueo", res["answer"].lower())
+        self.assertIn("custodio", res["answer"].lower())
+
     def test_valid_estatuto_tributario_query(self):
         res = process_fiscal_query(
             "¿Qué certifica la firma del Revisor Fiscal según el artículo 581 del Estatuto Tributario?"

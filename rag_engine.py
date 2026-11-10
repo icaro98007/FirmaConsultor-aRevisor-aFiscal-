@@ -65,6 +65,56 @@ BASE_KNOWLEDGE_CHUNKS: List[Dict[str, Any]] = [
             "sobre el control interno, cumplimiento estatutario y legal (Art. 209 C.Co.)."
         ),
     },
+    {
+        "chunk_id": "DOC01-C03",
+        "drive_id": "1m7qSgSd2YLgn-_AzbEnhSAscgEGNioEt",
+        "doc_name": "01_Procedimientos_auditoria.docx",
+        "category": "Manual Interno de Auditoría",
+        "section": "Sección 5: Procedimiento Obligatorio de Arqueo de Caja Menor y Tesorería",
+        "content": (
+            "Procedimiento Obligatorio para el Arqueo de Caja Menor según el Manual Interno de Auditoría "
+            "(01_Procedimientos_auditoria.docx): "
+            "1. Carácter Sorpresivo y Presencia del Custodio: El arqueo de caja menor debe ejecutarse de manera "
+            "sorpresiva (sin previo aviso) y obligatoriamente en presencia permanente del empleado responsable o custodio "
+            "del fondo fijo, quien no podrá ausentarse durante la diligencia. "
+            "2. Corte Documental y de Efectivo: Al iniciar el arqueo, el auditor solicita la exhibición de la totalidad "
+            "del efectivo (billetes y monedas), recibos provisionales (vales), facturas, comprobantes de caja menor "
+            "pendientes de reembolso y el último reembolso tramitado, suspendiendo cualquier transacción durante el conteo. "
+            "3. Conteo Físico y Validación de Soportes: Se clasifica y cuenta el dinero por denominación y se inspecciona "
+            "cada comprobante verificando: fecha reciente (dentro del período del reembolso), cumplimiento de requisitos "
+            "fiscales (factura electrónica o documento soporte cuando aplique), autorización de funcionario competente, "
+            "que no supere la cuantía máxima permitida por gasto individual y que no existan préstamos personales, "
+            "cambio de cheques ni vales vencidos sin legalizar. "
+            "4. Cuadre y Conciliación del Fondo Fijo: Se compara el monto del Fondo Fijo Autorizado en contabilidad contra "
+            "la sumatoria de: (Efectivo físico contado + Gastos soportados con facturas válidas + Recibos provisionales "
+            "autorizados). "
+            "5. Suscripción del Acta de Arqueo y Tratamiento de Diferencias: Se levanta el Acta de Arqueo de Caja Menor "
+            "en original y copia, firmada por el auditor/Revisor Fiscal y por el custodio (con declaración expresa de que "
+            "el efectivo y los documentos le fueron devueltos completos y a entera satisfacción). Si se detecta un "
+            "FALTANTE, se exige explicación escrita inmediata, se reporta a Contabilidad y Gestión Humana para su cobro "
+            "o descuento por nómina al responsable (registrándolo como cuenta por cobrar a empleados); si existe un "
+            "SOBRANTE, debe consignarse y registrarse como ingreso no operacional o pasivo pendiente de aclarar."
+        ),
+    },
+    {
+        "chunk_id": "DOC01-C04",
+        "drive_id": "1m7qSgSd2YLgn-_AzbEnhSAscgEGNioEt",
+        "doc_name": "01_Procedimientos_auditoria.docx",
+        "category": "Manual Interno de Auditoría",
+        "section": "Sección 6: Conciliaciones Bancarias, Inventarios, Cartera, Activos Fijos y Nómina",
+        "content": (
+            "Procedimientos Obligatorios por Ciclo de Auditoría (Manual Interno 01_Procedimientos_auditoria.docx): "
+            "- Conciliaciones Bancarias y Circularización (NIA 505): Verificar mensualmente las conciliaciones bancarias, "
+            "inspeccionar partidas conciliatorias con antigüedad superior a 30 días y enviar cartas de confirmación "
+            "directa a todas las entidades financieras al cierre del ejercicio. "
+            "- Toma Física de Inventarios (NIA 501): Presenciar el conteo físico de cierre, efectuar corte de entradas y "
+            "salidas (remisiones y facturas), realizar pruebas selectivas de conteo físico vs. kárdex (de piso a listado "
+            "y de listado a piso) y evaluar obsolescencia, lento movimiento y Valor Neto Realizable (NIC 2 / Sección 13). "
+            "- Cartera, Proveedores y Nómina: Ejecutar circularización de saldos de clientes y proveedores, recalcular "
+            "deterioro de cartera, verificar pagos posteriores y auditar liquidación de nómina, prestaciones sociales "
+            "y aportes al Sistema de Seguridad Social y Parafiscales (PILA / UGPP)."
+        ),
+    },
     # 02_Guia_practica_NIA.docx
     {
         "chunk_id": "DOC02-C01",

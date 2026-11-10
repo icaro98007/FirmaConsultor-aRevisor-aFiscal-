@@ -290,9 +290,15 @@ class FiscalGuardrails:
 
     # 4. Anclas Técnicas Obligatorias de los 16 Documentos en Drive
     REQUIRED_FISCAL_ANCHORS: List[str] = [
-        # Manual 01 y NIAs (Manual 02)
+        # Manual 01 (Procedimientos de Auditoría, Arqueo de Caja Menor, Inventarios, Conciliaciones) y NIAs (Manual 02)
         "revisoria fiscal", "revisor fiscal", "revisores fiscales",
-        "procedimientos de auditoria", "memorando de planeacion", "mpa",
+        "manual interno", "manual de auditoria", "procedimientos de auditoria",
+        "arqueo de caja", "arqueo", "caja menor", "fondo fijo", "acta de arqueo", "custodio",
+        "faltante", "sobrante", "reembolso de caja", "recibos provisionales",
+        "conciliacion bancaria", "conciliaciones bancarias", "partidas conciliatorias",
+        "toma fisica", "conteo fisico", "inventarios", "kardex", "valor neto realizable",
+        "deterioro de cartera", "parafiscales", "ugpp", "pila",
+        "memorando de planeacion", "mpa",
         "nia", "nias", "isae 3000", "isae", "nicc", "isqm", "iesba",
         "dictamen", "opinion con salvedades", "salvedad", "salvedades",
         "abstencion de opinion", "denegacion de opinion", "opinion desfavorable", "opinion adversa",

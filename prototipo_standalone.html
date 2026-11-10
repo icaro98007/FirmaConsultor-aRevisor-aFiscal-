@@ -55,6 +55,10 @@
       <section class="panel-card">
         <h2>Laboratorio de Pruebas (1-Click)</h2>
         <div class="scenario-list">
+          <button class="scenario-btn" data-q="¿Cuál es el procedimiento obligatorio para el arqueo de caja menor según el manual interno?">
+            <span class="tag tag-ok">Manual Interno · Arqueo</span>
+            Procedimiento obligatorio para el arqueo de caja menor según el manual interno
+          </button>
           <button class="scenario-btn" data-q="¿Cuándo debe el Revisor Fiscal emitir opinión con salvedades o abstención según NIA 705 y qué exige la NIA 240 frente al fraude?">
             <span class="tag tag-ok">NIA / Dictamen</span>
             Opinión modificada (NIA 705) y responsabilidad frente al fraude (NIA 240)
@@ -248,6 +252,13 @@
         content: "El Revisor Fiscal elabora el Memorando de Planeación de Auditoría (MPA), calcula la materialidad entre 0.5% y 2% de ingresos o activos (o 5% de utilidad antes de impuestos), ejecuta pruebas sustantivas (circularización externa, toma física de inventarios, recálculos) y conserva papeles de trabajo bajo reserva legal (Art. 214 C.Co.) por mínimo 5 años (Art. 207-209 C.Co.)."
       },
       {
+        chunk_id: "DOC01-C03",
+        doc_name: "01_Procedimientos_auditoria.docx",
+        category: "Manual Interno de Auditoría",
+        section: "Sección 5: Procedimiento Obligatorio de Arqueo de Caja Menor y Tesorería",
+        content: "Procedimiento obligatorio para el arqueo de caja menor según el manual interno (01_Procedimientos_auditoria.docx): 1) Carácter sorpresivo (sin previo aviso) y presencia permanente del custodio o responsable del fondo fijo. 2) Corte inmediato de documentos (recibos provisionales, vales, facturas y último reembolso) y bloqueo temporal de operaciones. 3) Conteo físico de billetes y monedas por denominación y validación de que los soportes cumplan requisitos legales, autorización y topes máximos (prohibido cambio de cheques o préstamos personales). 4) Conciliación del Fondo Fijo autorizado frente a (Efectivo físico + Comprobantes válidos + Recibos provisionales autorizados). 5) Suscripción del Acta de Arqueo firmada por el auditor/Revisor Fiscal y el custodio, exigiendo cobro o descuento al responsable en caso de faltante o consignación en caso de sobrante."
+      },
+      {
         chunk_id: "DOC02-C01",
         doc_name: "02_Guia_practica_NIA.docx",
         category: "Normas Internacionales de Auditoría (NIA)",
@@ -353,7 +364,7 @@
     }
 
     const REQUIRED_FISCAL_ANCHORS = [
-      "revisoria fiscal", "revisor fiscal", "revisores fiscales", "auditoria", "auditor", "nia", "nias", "isae", "nicc", "isqm", "iesba",
+      "revisoria fiscal", "revisor fiscal", "revisores fiscales", "manual interno", "manual de auditoria", "arqueo", "caja menor", "fondo fijo", "custodio", "acta de arqueo", "conciliacion bancaria", "toma fisica", "inventarios", "auditoria", "auditor", "nia", "nias", "isae", "nicc", "isqm", "iesba",
       "dictamen", "salvedad", "salvedades", "abstencion", "denegacion", "opinion adversa", "opinion modificada",
       "incorreccion", "importancia relativa", "materialidad", "muestreo", "pruebas sustantivas", "confirmacion externa", "circularizacion",
       "papeles de trabajo", "memorando de planeacion", "triangulo del fraude", "escepticismo profesional", "asientos de diario", "carta de gerencia",
