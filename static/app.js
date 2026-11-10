@@ -51,7 +51,12 @@ function escapeHtml(str) {
 }
 
 function formatMarkdownSimple(text) {
-  let html = escapeHtml(text);
+  let raw = String(text || "");
+  // Asegurar saltos de línea antes de puntos numerados (1. , 2. , 1) , 2) ) y viñetas (- )
+  raw = raw.replace(/(?:(?<=[:.;])\s+|\s{1,2})(?=(?:\d{1,2}[\.\)]\s+[A-ZÁÉÍÓÚÑ*]))/g, "\n");
+  raw = raw.replace(/(?:(?<=[:.;])\s+|\s{1,2})(?=(?:-\s+[A-ZÁÉÍÓÚÑ*]))/g, "\n");
+
+  let html = escapeHtml(raw);
   html = html.replace(/^### (.*)$/gm, "<h3>$1</h3>");
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");

@@ -570,13 +570,21 @@
       const botDiv = document.createElement("div");
       const cls = status === "BLOCKED_JAILBREAK" ? "blocked-jailbreak" : (status === "BLOCKED_OUT_OF_SCOPE" ? "blocked-oos" : "");
       const badgeCls = status === "BLOCKED_JAILBREAK" ? "badge-jailbreak" : (status === "BLOCKED_OUT_OF_SCOPE" ? "badge-oos" : "badge-grounded");
+      const formattedAns = answer
+        .replace(/(?:(?<=[:.;])\s+|\s{1,2})(?=(?:\d{1,2}[\.\)]\s+[A-ZÁÉÍÓÚÑ*]))/g, "\n")
+        .replace(/(?:(?<=[:.;])\s+|\s{1,2})(?=(?:-\s+[A-ZÁÉÍÓÚÑ*]))/g, "\n")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\[Fuente:\s*([^\]]+)\]/g, '<span class="tag tag-ok">[Fuente: $1]</span>')
+        .replace(/\n/g, "<br/>");
       botDiv.className = `message assistant-message ${cls}`;
       botDiv.innerHTML = `
         <div class="msg-header">
           <span class="msg-author">Agente de Revisoría Fiscal</span>
           <span class="msg-badge ${badgeCls}">${status}</span>
         </div>
-        <div class="msg-body"><p>${answer.replace(/\n/g, "<br/>")}</p></div>
+        <div class="msg-body"><p>${formattedAns}</p></div>
         <div class="msg-footer"><span>Motor: ${engine}</span><span>Timestamp: ${nowIso}</span></div>
         <div class="trace-action-bar">
           <button type="button" class="btn-trace" onclick="openTraceById('${traceId}')">
