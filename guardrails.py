@@ -101,25 +101,30 @@ class FiscalGuardrails:
     # Evaluados sobre texto normalizado sin tildes (_normalize_no_accents)
     JAILBREAK_NORMALIZED_PATTERNS: List[Tuple[str, re.Pattern]] = [
         (
-            "Juego de Rol / Simulación / Escenario Hipotético o Ficticio (Roleplay Jailbreak)",
+            "Juego de Rol / Suplantación de Autoridad (CEO, Socio, Hacker) / Escenario Hipotético",
             re.compile(
                 r"(?:juego\s+de\s+rol|role\s*play|imagina\s+que|imaginemos\s+que|simula\s+que|"
                 r"simulando\s+que|finge\s+que|fingiendo\s+que|supongamos\s+que|supon\s+que|"
-                r"haz\s+de\s+cuenta|ponte\s+en\s+el\s+papel|en\s+un\s+escenario\s+ficticio|"
-                r"en\s+un\s+mundo\s+ficticio|hipoteticamente|para\s+una\s+novela|para\s+un\s+guion|"
-                r"actua\s+como\s+(?:un|si)|eres\s+un\s+hacker|hacker\s+etico|pentester|atacante)",
+                r"haz\s+de\s+cuenta|ponte\s+en\s+el\s+papel|asume\s+el\s+rol|comportate\s+como|"
+                r"en\s+un\s+escenario\s+ficticio|en\s+un\s+mundo\s+ficticio|hipoteticamente|"
+                r"para\s+una\s+novela|para\s+un\s+guion|actua\s+como\b|eres\s+el\s+ceo|soy\s+el\s+ceo|"
+                r"soy\s+el\s+socio|soy\s+tu\s+jefe|eres\s+un\s+hacker|hacker\s+etico|pentester|atacante|"
+                r"ordename\b|autorizame\b|te\s+ordeno\s+que)",
                 re.IGNORECASE,
             ),
         ),
         (
-            "Solicitud de Ocultar Inconsistencias, Evadir Impuestos o Manipular Hallazgos/Logs",
+            "Solicitud de Ignorar/Ocultar Hallazgos, Lavado de Activos, Inconsistencias o Manipular Logs",
             re.compile(
                 r"(?:ocultar|ocultarle|esconder|maquillar|disfrazar|encubrir|alterar|borrar|eliminar|"
-                r"manipular|falsificar|adulterar|destruir|evadir|eludir|enganar|burlar|omitir\s+intencionalmente)\s+"
-                r"(?:las?\s+|los?\s+|el\s+|un\s+|una\s+|la\s+tabla\s+de\s+|los\s+archivos\s+de\s+)?"
-                r"(?:inconsistencias|hallazgos?|evidencias?|logs?|tabla\s+de\s+logs|registros?|trazabilidad|"
+                r"manipular|falsificar|adulterar|destruir|evadir|eludir|enganar|burlar|"
+                r"ignorar|ignora|omitir|omite|pasar\s+por\s+alto|hacer\s+caso\s+omiso|"
+                r"no\s+reportar|no\s+informar|callar|silenciar|tapar|desestimar)\s+"
+                r"(?:las?\s+|los?\s+|el\s+|un\s+|una\s+|este\s+|ese\s+|cualquier\s+|la\s+tabla\s+de\s+|los\s+archivos\s+de\s+)?"
+                r"(?:inconsistencias?|hallazgos?|evidencias?|logs?|tabla\s+de\s+logs|registros?|trazabilidad|"
                 r"impuestos?|declaraciones|dian|uiaf|supersociedades|estados\s+financieros|contabilidad|"
-                r"papeles\s+de\s+trabajo|controles|auditoria|fraude|operacion\s+sospechosa|sanciones?)",
+                r"papeles\s+de\s+trabajo|controles|auditoria|fraude|lavado\s+de\s+activos|"
+                r"operacion\s+sospechosa|ros\b|sanciones?|irregularidades?|alertas?)",
                 re.IGNORECASE,
             ),
         ),
