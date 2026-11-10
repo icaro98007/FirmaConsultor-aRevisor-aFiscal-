@@ -4,10 +4,10 @@ Guardarraíles Ultra-Estrictos para el Agente RAG Privado de Revisoría Fiscal.
 
 Implementa 4 capas de defensa en profundidad:
 1. Privacidad y Redacción de PII (DLP) antes de enviar datos a Gemini Cloud o logs.
-2. Escudo Anti-Jailbreak, System Override, Desactivación de Trazabilidad/Controles y Prompt Injection.
-3. Control Estricto de Alcance (Strict Domain Anchor + RAG Evidence Gate): Solo responde preguntas
-   sobre Manuales Internos, NIAs, Control Interno COSO, SARLAFT/SAGRILAFT, Decreto 2420,
-   Circulares de Supersociedades y Estatuto Tributario presentes en la base de conocimiento.
+2. Escudo Anti-Jailbreak, Anti-Roleplay/Simulación, Anti-Fraude/Ocultamiento de Hallazgos,
+   System Override, Desactivación de Trazabilidad/Logs y Prompt Injection.
+3. Control Estricto de Alcance Documental (Strict Corpus Whitelist + Verificación de Artículos/NIAs):
+   Solo responde lo que está explícitamente contenido en los documentos de la carpeta Google Drive.
 4. Validación de Salida (Output Guardrail) para garantizar citas y ausencia de fugas.
 """
 
@@ -25,9 +25,10 @@ OUT_OF_SCOPE_RESPONSE = (
 
 JAILBREAK_BLOCKED_RESPONSE = (
     "Alerta de Seguridad (Guardarraíl Activo): Su solicitud ha sido bloqueada porque contiene "
-    "instrucciones de intento de Jailbreak, System Override, desactivación de trazabilidad o alteración "
-    "de directivas de seguridad. Como agente de Revisoría Fiscal, opero bajo políticas inquebrantables "
-    "de privacidad, trazabilidad inmutable y solo respondo consultas técnicas de nuestra base oficial."
+    "patrones de intento de Jailbreak, juego de rol/simulación, ocultamiento de inconsistencias o "
+    "manipulación de registros/logs. Como agente de Revisoría Fiscal, opero bajo principios estrictos "
+    "de ética profesional (IESBA / Ley 43 de 1990), trazabilidad inmutable y solo respondo consultas "
+    "normativas legítimas respaldadas por nuestra base de conocimiento oficial."
 )
 
 
@@ -57,7 +58,7 @@ class GuardrailEvaluation:
 
 
 class FiscalGuardrails:
-    """Motor de Guardarraíles de Entrada, Privacidad, Alcance Estricto y Salida."""
+    """Motor de Guardarraíles de Entrada, Privacidad, Alcance Documental Estricto y Salida."""
 
     # 1. Patrones de Datos Personales y Sensibles (PII / DLP Colombia)
     PII_PATTERNS: List[Tuple[str, re.Pattern, str]] = [
@@ -96,9 +97,41 @@ class FiscalGuardrails:
         ),
     ]
 
-    # 2. Patrones Exhaustivos de Jailbreak, System Override y Evasión de Controles
-    # Nota: Se evalúan sobre el texto normalizado sin tildes (_normalize_no_accents)
+    # 2. Patrones Exhaustivos de Jailbreak, Roleplay, Simulación, Ocultamiento/Fraude y System Override
+    # Evaluados sobre texto normalizado sin tildes (_normalize_no_accents)
     JAILBREAK_NORMALIZED_PATTERNS: List[Tuple[str, re.Pattern]] = [
+        (
+            "Juego de Rol / Simulación / Escenario Hipotético o Ficticio (Roleplay Jailbreak)",
+            re.compile(
+                r"(?:juego\s+de\s+rol|role\s*play|imagina\s+que|imaginemos\s+que|simula\s+que|"
+                r"simulando\s+que|finge\s+que|fingiendo\s+que|supongamos\s+que|supon\s+que|"
+                r"haz\s+de\s+cuenta|ponte\s+en\s+el\s+papel|en\s+un\s+escenario\s+ficticio|"
+                r"en\s+un\s+mundo\s+ficticio|hipoteticamente|para\s+una\s+novela|para\s+un\s+guion|"
+                r"actua\s+como\s+(?:un|si)|eres\s+un\s+hacker|hacker\s+etico|pentester|atacante)",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Solicitud de Ocultar Inconsistencias, Evadir Impuestos o Manipular Hallazgos/Logs",
+            re.compile(
+                r"(?:ocultar|ocultarle|esconder|maquillar|disfrazar|encubrir|alterar|borrar|eliminar|"
+                r"manipular|falsificar|adulterar|destruir|evadir|eludir|enganar|burlar|omitir\s+intencionalmente)\s+"
+                r"(?:las?\s+|los?\s+|el\s+|un\s+|una\s+|la\s+tabla\s+de\s+|los\s+archivos\s+de\s+)?"
+                r"(?:inconsistencias|hallazgos?|evidencias?|logs?|tabla\s+de\s+logs|registros?|trazabilidad|"
+                r"impuestos?|declaraciones|dian|uiaf|supersociedades|estados\s+financieros|contabilidad|"
+                r"papeles\s+de\s+trabajo|controles|auditoria|fraude|operacion\s+sospechosa|sanciones?)",
+                re.IGNORECASE,
+            ),
+        ),
+        (
+            "Instrucción de Sabotaje de Base de Datos / Tabla de Logs / Borrado de Evidencia",
+            re.compile(
+                r"(?:alterar\s+la\s+tabla|borrar\s+un\s+hallazgo|borrar\s+el\s+historial|borrar\s+los\s+logs|"
+                r"eliminar\s+evidencia|modificar\s+el\s+ledger|romper\s+la\s+cadena|como\s+lo\s+harias.*ocultar|"
+                r"dime\s+como\s+(?:alterar|borrar|ocultar|evadir|hackear|vulnerar|falsificar))",
+                re.IGNORECASE,
+            ),
+        ),
         (
             "Directiva de System Override / Bypass de Seguridad",
             re.compile(
@@ -175,7 +208,7 @@ class FiscalGuardrails:
         ),
     ]
 
-    # 3. Temas explícitamente fuera del alcance de Revisoría Fiscal (incluso si mencionan palabras sueltas)
+    # 3. Temas explícitamente NO incluidos en los 16 documentos (tanto generales como subtemas contables/legales no presentes)
     EXPLICIT_OUT_OF_SCOPE_NORMALIZED: List[re.Pattern] = [
         re.compile(
             r"\b(?:receta\s+de|cocinar|paella|pizza|restaurante|futbol|partido\s+de|mundial|champions|"
@@ -185,34 +218,46 @@ class FiscalGuardrails:
             r"novia|pareja|amor|como\s+hackear|escribir\s+un\s+cuento|novela|capital\s+de|"
             r"planeta\s+marte|distancia\s+entre\s+la\s+tierra|sistema\s+solar|historia\s+de\s+roma|"
             r"segunda\s+guerra\s+mundial|codigo\s+en\s+python|programa\s+en\s+javascript|crear\s+una\s+web|"
-            r"liquidacion\s+de\s+vacaciones|licencia\s+de\s+maternidad|divorcio|custodia|demanda\s+de\s+alimentos|"
-            r"derecho\s+penal|homicidio|traduce\s+al\s+ingles|resumen\s+del\s+libro)\b",
+            r"liquidacion\s+de\s+vacaciones|licencia\s+de\s+maternidad|cesantias|prima\s+de\s+servicios|"
+            r"horas\s+extras|contrato\s+de\s+trabajo|despido\s+sin\s+justa\s+causa|divorcio|custodia|"
+            r"demanda\s+de\s+alimentos|derecho\s+penal|homicidio|traduce\s+al\s+ingles|resumen\s+del\s+libro|"
+            r"impuesto\s+al\s+patrimonio|impuesto\s+saludable|bolsas\s+plasticas|regimen\s+simple|rst|"
+            r"precios\s+de\s+transferencia|factura\s+electronica|nomina\s+electronica|ica\s+bogota|"
+            r"predial|vehiculos|arancel|aduanas)\b",
             re.IGNORECASE,
         )
     ]
 
-    # 4. Anclas Técnicas Obligatorias de la Base de Conocimiento
-    # Para que una consulta sea admitida, DEBE contener al menos un concepto técnico específico
-    # de nuestros Manuales Internos, NIAs, COSO, SARLAFT/SAGRILAFT, Circulares o Estatuto Tributario.
+    # Listas blancas de números de NIA y Artículos que SÍ existen en nuestros documentos
+    SUPPORTED_NIA_NUMBERS = {"200", "230", "240", "265", "315", "320", "330", "500", "505", "530", "700", "701", "705"}
+    SUPPORTED_ARTICLE_NUMBERS = {
+        "13", "27", "203", "207", "208", "209", "214",
+        "580", "581", "596", "602", "606",
+        "641", "643", "647", "648",
+        "659", "660",
+        "772", "773", "774", "775", "776", "777",
+    }
+
+    # 4. Anclas Técnicas Obligatorias de los 16 Documentos en Drive
     REQUIRED_FISCAL_ANCHORS: List[str] = [
-        # Revisoría Fiscal y Auditoría (Manual 01 y NIAs)
+        # Manual 01 y NIAs (Manual 02)
         "revisoria fiscal", "revisor fiscal", "revisores fiscales",
-        "auditoria", "auditor", "auditores",
-        "nia", "nias", "isae", "nicc", "isqm", "iesba",
+        "procedimientos de auditoria", "memorando de planeacion", "mpa",
+        "nia", "nias", "isae 3000", "isae", "nicc", "isqm", "iesba",
         "dictamen", "opinion con salvedades", "salvedad", "salvedades",
         "abstencion de opinion", "denegacion de opinion", "opinion desfavorable", "opinion adversa",
         "opinion modificada", "opinion no modificada",
         "incorreccion material", "incorrecciones", "importancia relativa", "materialidad",
         "error tolerable", "muestreo de auditoria", "muestreo", "pruebas sustantivas",
         "confirmacion externa", "confirmaciones externas", "circularizacion",
-        "papeles de trabajo", "memorando de planeacion", "archivo permanente",
+        "papeles de trabajo", "archivo permanente",
         "triangulo del fraude", "escepticismo profesional", "asientos de diario",
         "carta de gerencia", "reserva profesional", "evidencia de auditoria",
         # Control Interno COSO y Hallazgos (Manual 03)
         "control interno", "coso", "ambiente de control", "evaluacion de riesgos",
         "actividades de control", "segregacion de funciones", "itgc",
         "hallazgo", "hallazgos", "debilidad material", "deficiencia significativa",
-        "deficiencia de control", "condicion, criterio", "atributos de un hallazgo",
+        "deficiencia de control", "atributos de un hallazgo",
         # Cumplimiento SARLAFT / SAGRILAFT / ROS (Manual 04 y Circulares)
         "sarlaft", "sagrilaft", "ptee", "uiaf", "sirel",
         "operacion sospechosa", "operaciones sospechosas", "reporte ros", "reportes ros", "el ros", "un ros",
@@ -222,17 +267,15 @@ class FiscalGuardrails:
         "capitulo x", "circular basica juridica", "soborno transnacional",
         # Decreto 2420, NIIF, Supersociedades y Código de Comercio
         "decreto 2420", "2420 de 2015", "normas de aseguramiento", "niif",
-        "estados financieros", "cierre contable", "libros de contabilidad", "prueba contable",
+        "estados financieros", "libros de contabilidad", "prueba contable",
         "supersociedades", "superintendencia de sociedades", "circular externa",
         "100-000002", "100-000003", "100-000004", "100-000008", "100-000015",
         "100-000016", "100-000020", "100-300000", "734390",
         "codigo de comercio", "junta central de contadores",
-        # Estatuto Tributario Colombiano
+        # Estatuto Tributario Colombiano (Secciones presentes en el corpus)
         "estatuto tributario", "declaracion tributaria", "declaraciones tributarias",
-        "declaracion de renta", "declaracion de iva", "declaracion de retencion",
-        "retencion en la fuente", "retenciones", "impuesto sobre la renta", "impuesto a cargo",
         "sancion por extemporaneidad", "extemporaneidad", "sancion por inexactitud", "inexactitud",
-        "dian", "firma del contador", "firma del revisor",
+        "firma del contador", "firma del revisor",
         "articulo 580", "art 580", "art. 580",
         "articulo 581", "art 581", "art. 581",
         "articulo 596", "art 596", "articulo 602", "art 602", "articulo 606", "art 606",
@@ -267,7 +310,8 @@ class FiscalGuardrails:
     def detect_jailbreak(cls, text: str) -> Tuple[bool, List[str]]:
         """
         Evalúa sobre texto normalizado (sin tildes) si la entrada intenta realizar
-        System Override, desactivar trazabilidad/módulos, modo libre, Prompt Injection o Exfiltración.
+        Juego de Rol/Simulación, Ocultamiento de Hallazgos/Inconsistencias, Alteración de Logs,
+        System Override, Desactivación de Trazabilidad, Prompt Injection o Exfiltración.
         """
         norm_text = _normalize_no_accents(text)
         triggers: List[str] = []
@@ -277,31 +321,53 @@ class FiscalGuardrails:
         return (len(triggers) > 0), triggers
 
     @classmethod
-    def compute_domain_affinity(cls, text: str) -> Tuple[float, bool, List[str]]:
+    def check_unsupported_citations(cls, norm_text: str) -> Optional[str]:
+        """
+        Verifica si el usuario pregunta por un número específico de NIA o Artículo
+        que NO existe dentro de nuestros documentos de Google Drive.
+        """
+        for m in re.finditer(r"\bnia\s*(\d{2,4})\b", norm_text):
+            num = m.group(1)
+            if num not in cls.SUPPORTED_NIA_NUMBERS:
+                return f"La NIA {num} no forma parte de los documentos indexados en nuestra base privada."
+
+        for m in re.finditer(r"\bart(?:iculo|\.)?\s*(\d{1,4})\b", norm_text):
+            num = m.group(1)
+            if num not in cls.SUPPORTED_ARTICLE_NUMBERS:
+                return f"El Artículo {num} no se encuentra dentro de los fragmentos normativos de nuestra base."
+
+        return None
+
+    @classmethod
+    def compute_domain_affinity(cls, text: str) -> Tuple[float, bool, List[str], Optional[str]]:
         """
         Verifica de forma estricta:
-        1. Si contiene algún tema explícitamente ajeno -> (0.0, True, [])
-        2. Cuáles anclas técnicas específicas de Revisoría Fiscal / NIAs / Estatuto Tributario aparecen.
-           Si no aparece NINGUNA ancla técnica específica -> score = 0.0 (se rechaza de inmediato).
+        1. Si contiene algún tema explícitamente ajeno o no soportado -> (0.0, True, [], reason)
+        2. Si cita una NIA o Artículo que no está en los documentos -> (0.0, True, [], reason)
+        3. Cuáles anclas técnicas específicas de los documentos aparecen.
         """
         norm = _normalize_no_accents(text)
         for pat in cls.EXPLICIT_OUT_OF_SCOPE_NORMALIZED:
             if pat.search(norm):
-                return 0.0, True, []
+                return 0.0, True, [], "Tema fuera del alcance de los documentos de Revisoría Fiscal."
+
+        unsupported_reason = cls.check_unsupported_citations(norm)
+        if unsupported_reason:
+            return 0.0, True, [], unsupported_reason
 
         matched_anchors = [anchor for anchor in cls.REQUIRED_FISCAL_ANCHORS if anchor in norm]
         if not matched_anchors:
-            return 0.0, False, []
+            return 0.0, False, [], "La consulta no menciona ningún tema presente en los documentos de la base privada."
 
         score = min(1.0, 0.45 + 0.25 * len(matched_anchors))
-        return round(score, 2), False, matched_anchors
+        return round(score, 2), False, matched_anchors, None
 
     @classmethod
     def evaluate_input_and_retrieval(
         cls,
         user_query: str,
         retrieved_chunks: List[Dict[str, Any]],
-        min_retrieval_score: float = 0.25,
+        min_retrieval_score: float = 0.28,
     ) -> GuardrailEvaluation:
         """
         Ejecuta las capas de protección estrictas sobre la consulta y los resultados del corpus.
@@ -323,12 +389,12 @@ class FiscalGuardrails:
             }
         )
 
-        # Capa 2: Escudo Anti-Jailbreak, System Override & Desactivación de Trazabilidad
+        # Capa 2: Escudo Anti-Jailbreak, Anti-Roleplay, Anti-Fraude y System Override
         is_jailbreak, triggers = cls.detect_jailbreak(user_query)
         if is_jailbreak:
             layers.append(
                 {
-                    "layer": "2. Escudo Anti-Jailbreak / System Override",
+                    "layer": "2. Escudo Anti-Jailbreak / Roleplay / Sabotaje",
                     "passed": False,
                     "status": "BLOCKED",
                     "detail": f"Ataque bloqueado: {', '.join(triggers)}",
@@ -351,32 +417,40 @@ class FiscalGuardrails:
 
         layers.append(
             {
-                "layer": "2. Escudo Anti-Jailbreak / System Override",
+                "layer": "2. Escudo Anti-Jailbreak / Roleplay / Sabotaje",
                 "passed": True,
                 "status": "SAFE",
-                "detail": "No se detectaron patrones de System Override, desactivación de trazabilidad ni inyección.",
+                "detail": "Sin patrones de juego de rol, ocultamiento ilícito, manipulación de logs ni System Override.",
             }
         )
 
-        # Capa 3: Alcance Estricto (Requiere Ancla Técnica de Dominio + Score RAG >= min_retrieval_score)
-        domain_score, explicit_oos, matched_anchors = cls.compute_domain_affinity(sanitized_query)
+        # Capa 3: Alcance Documental Estricto (Ancla + Cobertura en Documentos + Score RAG >= min_retrieval_score)
+        domain_score, explicit_oos, matched_anchors, oos_reason = cls.compute_domain_affinity(sanitized_query)
         top_score = max((c.get("score", 0.0) for c in retrieved_chunks), default=0.0)
+        top_matched_terms = max((c.get("matched_terms", 0) for c in retrieved_chunks), default=0)
 
-        # Regla estricta: Debe tener al menos 1 ancla técnica de Revisoría Fiscal/NIAs/ET
-        # Y además evidencia en los documentos superior al umbral
-        if explicit_oos or domain_score == 0.0 or not matched_anchors or top_score < min_retrieval_score:
+        # Exigimos que:
+        # 1) No sea un tema o artículo no soportado (explicit_oos == False)
+        # 2) Contenga al menos 1 ancla específica de los documentos (matched_anchors)
+        # 3) El fragmento recuperado tenga score >= min_retrieval_score y al menos 2 términos técnicos coincidentes
+        if (
+            explicit_oos
+            or domain_score == 0.0
+            or not matched_anchors
+            or top_score < min_retrieval_score
+            or (top_matched_terms < 2 and top_score < 0.45)
+        ):
             reason_detail = (
-                "Tema explícitamente ajeno a Revisoría Fiscal."
-                if explicit_oos
+                oos_reason
+                if oos_reason
                 else (
-                    "La consulta no contiene ningún concepto técnico de Manuales Internos, NIAs, COSO, SAGRILAFT o Estatuto Tributario."
-                    if not matched_anchors
-                    else f"Evidencia documental insuficiente (Score RAG: {top_score:.2f} < umbral {min_retrieval_score:.2f})."
+                    f"Evidencia insuficiente en los documentos de Google Drive "
+                    f"(Score RAG: {top_score:.2f}, Términos verificados: {top_matched_terms})."
                 )
             )
             layers.append(
                 {
-                    "layer": "3. Control Estricto de Alcance y Grounding",
+                    "layer": "3. Control Estricto de Alcance Documental",
                     "passed": False,
                     "status": "OUT_OF_SCOPE",
                     "detail": reason_detail,
@@ -399,11 +473,11 @@ class FiscalGuardrails:
 
         layers.append(
             {
-                "layer": "3. Control Estricto de Alcance y Grounding",
+                "layer": "3. Control Estricto de Alcance Documental",
                 "passed": True,
                 "status": "GROUNDED",
                 "detail": (
-                    f"Anclas verificadas ({', '.join(matched_anchors[:3])}) · "
+                    f"Anclas documentales verificadas ({', '.join(matched_anchors[:3])}) · "
                     f"Evidencia en {len(retrieved_chunks)} fragmento(s) (Confianza: {top_score:.2f})."
                 ),
             }

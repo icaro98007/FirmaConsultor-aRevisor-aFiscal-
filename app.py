@@ -33,7 +33,7 @@ trace_pipeline = ImmutableTraceabilityPipeline(ledger_path=LEDGER_PATH)
 RUNTIME_CONFIG: Dict[str, Any] = {
     "gemini_api_key": os.environ.get("GEMINI_API_KEY", ""),
     "gemini_model": os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
-    "min_retrieval_score": 0.25,
+    "min_retrieval_score": 0.28,
 }
 
 

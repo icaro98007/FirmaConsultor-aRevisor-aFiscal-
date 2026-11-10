@@ -517,7 +517,7 @@ class PrivateFiscalRAG:
             coverage = matched_terms / max(1, len(set(q_tokens)))
             normalized_score = min(0.99, (bm25 / 6.5) + (coverage * 0.35) + exact_boost) if matched_terms > 0 else 0.0
 
-            if normalized_score > 0.05:
+            if normalized_score > 0.15 and (matched_terms >= 2 or (exact_boost > 0 and matched_terms >= 1)):
                 item = {
                     "chunk_id": chunk["chunk_id"],
                     "drive_id": chunk["drive_id"],
@@ -526,6 +526,7 @@ class PrivateFiscalRAG:
                     "section": chunk["section"],
                     "content": chunk["content"],
                     "score": round(normalized_score, 3),
+                    "matched_terms": matched_terms,
                 }
                 scored.append(item)
 
