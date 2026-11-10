@@ -335,9 +335,14 @@ def _tokenize(text: str) -> List[str]:
         "cuales", "como", "cuando", "donde", "quien", "es", "son", "fue", "ser", "esta",
         "este", "estos", "estas", "ese", "esa", "su", "sus", "mi", "mis", "tu", "tus",
         "se", "lo", "le", "les", "me", "te", "nos", "mas", "pero", "si", "no", "ya",
+        # Palabras genéricas que no deben disparar coincidencias documentales por sí solas
+        "sistema", "modulo", "modo", "libre", "guardar", "registro", "registros", "reto",
+        "responde", "responder", "pregunta", "preguntas", "tema", "informacion", "datos",
+        "hacer", "puede", "debe", "tiene", "tienen", "forma", "parte", "caso", "casos",
+        "general", "nacional", "empresa", "empresas", "entidad", "proceso", "procesos",
     }
     norm = _normalize_text(text)
-    return [tok for tok in norm.split() if len(tok) > 1 and tok not in STOPWORDS]
+    return [tok for tok in norm.split() if len(tok) > 2 and tok not in STOPWORDS]
 
 
 def extract_text_from_docx(path: Path) -> str:
