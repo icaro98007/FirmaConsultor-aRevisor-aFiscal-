@@ -1,0 +1,15 @@
+name = "agente-rag-revisoria-fiscal"
+main = "cloudflare_worker.js"
+compatibility_date = "2025-02-01"
+
+# Sirve automáticamente los archivos estáticos de ./static (index.html, styles.css, app.js)
+[assets]
+directory = "./static"
+binding = "ASSETS"
+
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+MIN_RETRIEVAL_SCORE = "0.28"
+
+# Para configurar tu GEMINI_API_KEY de forma cifrada en Cloudflare ejecuta:
+# npx wrangler secret put GEMINI_API_KEY
