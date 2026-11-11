@@ -274,7 +274,12 @@ export default {
       });
     }
 
-    // Servir los activos estáticos (index.html, styles.css, app.js)
+    // Servir los activos estáticos (soportando tanto /styles.css como /static/styles.css)
+    if (url.pathname.startsWith("/static/")) {
+      const rewrittenUrl = new URL(request.url);
+      rewrittenUrl.pathname = url.pathname.replace(/^\/static/, "");
+      return env.ASSETS.fetch(new Request(rewrittenUrl.toString(), request));
+    }
     return env.ASSETS.fetch(request);
   }
 };
